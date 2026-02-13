@@ -18,26 +18,6 @@ export function initFiltering(elements, indexes) {
 
     return (data, state, action) => {
 
-        // @todo: #4.2 — очистить поля фильтров
-        if (action && action.name === 'clear') {
-            const fieldName = action.dataset.field;
-            const parent = action.parentElement;
-            const input = parent.querySelector('input, select');
-
-            if (input) {
-                input.value = '';
-                state[fieldName] = '';
-            }
-        }
-         const preparedState = { ...state };
-
-    if ('totalFrom' in state || 'totalTo' in state) {
-        preparedState.total = [state.totalFrom, state.totalTo];
-        delete preparedState.totalFrom;
-        delete preparedState.totalTo;
-    }
-
-
         // @todo: #4.3 — создать функцию сравнения
         const compare = createComparison(defaultRules);
 
