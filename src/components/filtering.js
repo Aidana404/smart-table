@@ -29,6 +29,14 @@ export function initFiltering(elements, indexes) {
                 state[fieldName] = '';
             }
         }
+         const preparedState = { ...state };
+
+    if ('totalFrom' in state || 'totalTo' in state) {
+        preparedState.total = [state.totalFrom, state.totalTo];
+        delete preparedState.totalFrom;
+        delete preparedState.totalTo;
+    }
+
 
         // @todo: #4.3 — создать функцию сравнения
         const compare = createComparison(defaultRules);

@@ -27,15 +27,10 @@ function collectState() {
     const rowsPerPage = parseInt(state.rowsPerPage);
     const page = parseInt(state.page ?? 1);
 
-    const totalFrom = state.totalFrom ? parseFloat(state.totalFrom) : '';
-    const totalTo = state.totalTo ? parseFloat(state.totalTo) : '';
-
     return {
         ...state,
         rowsPerPage,
-        page,
-        totalFrom,
-        totalTo
+        page
     };
 }
 
