@@ -1,4 +1,7 @@
-import { createComparison, defaultRules } from "../lib/compare.js";
+import {createComparison, defaultRules} from "../lib/compare.js";
+
+// @todo: #4.3 — настроить компаратор
+const compare = createComparison(defaultRules);
 
 export function initFiltering(elements, indexes) {
 
@@ -18,10 +21,19 @@ export function initFiltering(elements, indexes) {
 
     return (data, state, action) => {
 
-        // @todo: #4.3 — создать функцию сравнения
-        const compare = createComparison(defaultRules);
+        // @todo: #4.2 — обработать очистку поля
+        if (action && action.name === 'clear') {
+            const fieldName = action.dataset.field;
+            const parent = action.parentElement;
+            const input = parent.querySelector('input, select');
 
-        // @todo: #4.5 — отфильтровать данные
+            if (input) {
+                input.value = '';
+                state[fieldName] = '';
+            }
+        }
+
+        // @todo: #4.5 — отфильтровать данные используя компаратор
         return data.filter(row => compare(row, state));
     }
 }
