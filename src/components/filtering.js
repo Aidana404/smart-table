@@ -32,7 +32,20 @@ export function initFiltering(elements, indexes) {
                 state[fieldName] = '';
             }
         }
+         const preparedState = { ...state };
 
+    // Формирую диапазон так как ругаются автотесты
+    if (state.totalFrom || state.totalTo) {
+        preparedState.total = [
+            state.totalFrom || undefined,
+            state.totalTo || undefined
+        ];
+    }
+
+    delete preparedState.totalFrom;
+    delete preparedState.totalTo;
+
+    
         // @todo: #4.5 — отфильтровать данные используя компаратор
         return data.filter(row => compare(row, state));
     }
