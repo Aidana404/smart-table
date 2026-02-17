@@ -1,11 +1,9 @@
 import {createComparison, defaultRules} from "../lib/compare.js";
 
-// @todo: #4.3 — настроить компаратор
-
+const compare = createComparison(defaultRules);
 
 export function initFiltering(elements, indexes) {
 
-    // @todo: #4.1 — заполнить выпадающие списки
     Object.keys(indexes)
         .forEach((elementName) => {
             elements[elementName].append(
@@ -21,7 +19,6 @@ export function initFiltering(elements, indexes) {
 
     return (data, state, action) => {
 
-        // @todo: #4.2 — обработать очистку поля
         if (action && action.name === 'clear') {
             const fieldName = action.dataset.field;
             const parent = action.parentElement;
@@ -32,24 +29,19 @@ export function initFiltering(elements, indexes) {
                 state[fieldName] = '';
             }
         }
-         const preparedState = { ...state };
 
-    // Формирую диапазон так как ругаются автотесты
-    if (state.totalFrom || state.totalTo) {
-        preparedState.total = [
-            state.totalFrom || undefined,
-            state.totalTo || undefined
-        ];
-    }
+        const preparedState = { ...state };
 
-    delete preparedState.totalFrom;
-    delete preparedState.totalTo;
+        if (state.totalFrom || state.totalTo) {
+            preparedState.total = [
+                state.totalFrom ? Number(state.totalFrom) : undefined,
+                state.totalTo ? Number(state.totalTo) : undefined
+            ];
+        }
 
-    // @todo: #4.3 — настроить компаратор 
-    const compare = createComparison(defaultRules);
+        delete preparedState.totalFrom;
+        delete preparedState.totalTo;
 
-    
-        // @todo: #4.5 — отфильтровать данные используя компаратор
-        return data.filter(row => compare(row, state));
+        return data.filter(row => compare(row, preparedState));
     }
 }
