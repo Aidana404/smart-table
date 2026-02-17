@@ -1,7 +1,7 @@
 import {createComparison, defaultRules} from "../lib/compare.js";
 
 // @todo: #4.3 — настроить компаратор
-const compare = createComparison(defaultRules);
+
 
 export function initFiltering(elements, indexes) {
 
@@ -44,6 +44,9 @@ export function initFiltering(elements, indexes) {
 
     delete preparedState.totalFrom;
     delete preparedState.totalTo;
+
+    // @todo: #4.3 — настроить компаратор 
+    const compare = createComparison(defaultRules);
 
     
         // @todo: #4.5 — отфильтровать данные используя компаратор
