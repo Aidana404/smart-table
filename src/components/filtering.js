@@ -1,47 +1,52 @@
-import {createComparison, defaultRules} from "../lib/compare.js";
+export function initFiltering(elements) {
 
-const compare = createComparison(defaultRules);
+    const updateIndexes = (elements, indexes) => {
 
-export function initFiltering(elements, indexes) {
+        Object.keys(indexes).forEach((elementName) => {
 
-    Object.keys(indexes)
-        .forEach((elementName) => {
             elements[elementName].append(
-                ...Object.values(indexes[elementName])
-                    .map(name => {
-                        const option = document.createElement('option');
-                        option.value = name;
-                        option.textContent = name;
-                        return option;
-                    })
+                ...Object.values(indexes[elementName]).map(name => {
+                    const el = document.createElement('option');
+                    el.textContent = name;
+                    el.value = name;
+                    return el;
+                })
             );
+
         });
 
-    return (data, state, action) => {
+    };
 
-        if (action && action.name === 'clear') {
-            const fieldName = action.dataset.field;
-            const parent = action.parentElement;
-            const input = parent.querySelector('input, select');
 
-            if (input) {
-                input.value = '';
-                state[fieldName] = '';
+    const applyFiltering = (query, state, action) => {
+
+        const filter = {};
+
+        Object.keys(elements).forEach(key => {
+
+            if (elements[key]) {
+
+                if (
+                    ['INPUT', 'SELECT'].includes(elements[key].tagName) &&
+                    elements[key].value
+                ) {
+
+                    filter[`filter[${elements[key].name}]`] = elements[key].value;
+
+                }
+
             }
-        }
 
-        const preparedState = { ...state };
+        });
 
-        if (state.totalFrom || state.totalTo) {
-            preparedState.total = [
-                state.totalFrom ? Number(state.totalFrom) : undefined,
-                state.totalTo ? Number(state.totalTo) : undefined
-            ];
-        }
+        return Object.keys(filter).length
+            ? Object.assign({}, query, filter)
+            : query;
+    };
 
-        delete preparedState.totalFrom;
-        delete preparedState.totalTo;
 
-        return data.filter(row => compare(row, preparedState));
-    }
+    return {
+        updateIndexes,
+        applyFiltering
+    };
 }
